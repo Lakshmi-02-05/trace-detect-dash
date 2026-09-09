@@ -14,7 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      incidents: {
+        Row: {
+          alert_type: string
+          attempt_count: number
+          detected_at: string
+          evidence: string[]
+          first_seen: string | null
+          id: string
+          last_seen: string | null
+          reason: string
+          recommended_action: string
+          rule_id: string
+          severity: string
+          source_ip: string | null
+          status: string
+          upload_id: string
+          usernames: string[]
+        }
+        Insert: {
+          alert_type: string
+          attempt_count?: number
+          detected_at?: string
+          evidence?: string[]
+          first_seen?: string | null
+          id?: string
+          last_seen?: string | null
+          reason: string
+          recommended_action: string
+          rule_id: string
+          severity: string
+          source_ip?: string | null
+          status?: string
+          upload_id: string
+          usernames?: string[]
+        }
+        Update: {
+          alert_type?: string
+          attempt_count?: number
+          detected_at?: string
+          evidence?: string[]
+          first_seen?: string | null
+          id?: string
+          last_seen?: string | null
+          reason?: string
+          recommended_action?: string
+          rule_id?: string
+          severity?: string
+          source_ip?: string | null
+          status?: string
+          upload_id?: string
+          usernames?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      log_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: number
+          line_number: number
+          message: string
+          occurred_at: string | null
+          source_ip: string | null
+          status: string
+          upload_id: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: number
+          line_number: number
+          message: string
+          occurred_at?: string | null
+          source_ip?: string | null
+          status: string
+          upload_id: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: number
+          line_number?: number
+          message?: string
+          occurred_at?: string | null
+          source_ip?: string | null
+          status?: string
+          upload_id?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "log_events_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      uploads: {
+        Row: {
+          created_at: string
+          filename: string
+          id: string
+          malformed_lines: number
+          parsed_lines: number
+          total_lines: number
+        }
+        Insert: {
+          created_at?: string
+          filename: string
+          id?: string
+          malformed_lines?: number
+          parsed_lines?: number
+          total_lines?: number
+        }
+        Update: {
+          created_at?: string
+          filename?: string
+          id?: string
+          malformed_lines?: number
+          parsed_lines?: number
+          total_lines?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
