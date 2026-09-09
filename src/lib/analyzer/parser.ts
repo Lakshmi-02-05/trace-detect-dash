@@ -41,15 +41,16 @@ const IPV6 = /\b([0-9a-fA-F]{0,4}(?::[0-9a-fA-F]{0,4}){2,7})\b/;
 export function extractIp(body: string): string | null {
   const fromMatch = body.match(/from\s+(\S+)/i);
   const candidate = fromMatch?.[1] ?? body;
-  const v4 = candidate.match(IPV4) ?? body.match(IPV4);
+  const v4 = candidate.match(IPV4)?.[1] ?? body.match(IPV4)?.[1];
   if (v4) {
     // Reject impossible octets rather than trusting the log blindly.
-    const octets = v4[1].split(".").map(Number);
-    if (octets.every((o) => o >= 0 && o <= 255)) return v4[1];
+    const octets = v4.split(".").map(Number);
+    if (octets.every((o) => o >= 0 && o <= 255)) return v4;
   }
-  const v6 = candidate.match(IPV6);
-  if (v6 && v6[1].includes(":")) return v6[1];
+  const v6 = candidate.match(IPV6)?.[1];
+  if (v6 && v6.includes(":")) return v6;
   return null;
+
 }
 
 /** Extract the username a message refers to, if any. */
