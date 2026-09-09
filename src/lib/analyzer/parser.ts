@@ -150,23 +150,29 @@ export function parseAuthLog(content: string, options: ParseOptions = {}): Parse
     const iso = syslog ? null : raw.match(ISO_RE);
 
     if (syslog) {
-      const [, month, day, hh, mm, ss, , proc, , rest] = syslog;
-      const date = buildSyslogDate(month, day, hh, mm, ss, referenceYear);
+      const date = buildSyslogDate(
+        syslog[1] ?? "",
+        syslog[2] ?? "1",
+        syslog[3] ?? "0",
+        syslog[4] ?? "0",
+        syslog[5] ?? "0",
+        referenceYear,
+      );
       if (date) {
         occurredAt = date.toISOString();
         timeMs = date.getTime();
       }
-      process = proc;
-      body = rest;
+      process = syslog[7] ?? "";
+      body = syslog[9] ?? "";
     } else if (iso) {
-      const [, stamp, , proc, , rest] = iso;
-      const date = new Date(stamp);
+      const date = new Date(iso[1] ?? "");
       if (!Number.isNaN(date.getTime())) {
         occurredAt = date.toISOString();
         timeMs = date.getTime();
       }
-      process = proc;
-      body = rest;
+      process = iso[3] ?? "";
+      body = iso[5] ?? "";
+
     } else {
       malformed.push({ lineNumber, raw, reason: "Line does not match a known syslog format" });
       return;
