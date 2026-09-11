@@ -56,15 +56,20 @@ export function extractIp(body: string): string | null {
 /** Extract the username a message refers to, if any. */
 export function extractUsername(body: string): string | null {
   const patterns = [
+    // sudo lines start with the invoking user: "alice : TTY=pts/1 ; ... USER=root".
+    // Must come before USER=, which names the target account (usually root).
+    /^\s*([A-Za-z0-9._-]+)\s*:\s*(?:TTY=|user NOT in)/,
     /for invalid user\s+([^\s]+)/i,
     /invalid user\s+([^\s]+)/i,
     /(?:password|publickey) for\s+([^\s]+)\s+from/i,
     /Accepted \w+ for\s+([^\s]+)/i,
-    /user=([^\s]+)/i,
+    /\bruser=([^\s]+)/i,
+    /\blogname=([^\s]+)/i,
+    /\buser=([^\s]+)/i,
     /USER=([^\s]+)/,
     /for user\s+([^\s]+)/i,
     /session (?:opened|closed) for user\s+([^\s(]+)/i,
-    /^\s*([A-Za-z0-9._-]+)\s*:\s*(?:TTY|user NOT in sudoers)/,
+
   ];
   for (const re of patterns) {
     const m = body.match(re);
